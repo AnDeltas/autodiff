@@ -20,22 +20,22 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BMode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FMode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PtrGraph.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="FMode.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
     <ClCompile Include="test.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="forward_mode_tensor.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="backward_mode_tensor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="forward_mode_tensor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pointer_graph.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

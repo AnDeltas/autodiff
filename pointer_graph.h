@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include <vector>
-#include <iostream>
 #include <ostream>
 
 namespace ad {

@@ -3,19 +3,17 @@
 #include <string>
 #include <cmath>
 #include <ostream>
-#include <memory>
-#include <iostream>
-#include "PtrGraph.h"
+#include "pointer_graph.h"
 
 namespace ad {
-    enum Op { Add, Min, Mul, Div, Sin, Cos, Log, None };
+    enum Op { ADD, MIN, MUL, DIV, SIN, COS, LOG, NONE };
 
-    class Tensor {
+    class BackwardModeTensor {
     public:
         //隐式存放计算图
-        static PtrGraph<Tensor> compute_graph_;
+        static PtrGraph<BackwardModeTensor> compute_graph_;
 
-        friend std::ostream& operator<<(std::ostream& os, const Tensor& obj) {
+        friend std::ostream& operator<<(std::ostream& os, const BackwardModeTensor& obj) {
             return os
                 << "("
                 << "index: " << obj.index_
@@ -30,35 +28,35 @@ namespace ad {
         double grad_;
         Op o_;
 
-        explicit Tensor(const double value = 0, const Op& o = Op::None)
+        explicit BackwardModeTensor(const double value = 0, const Op& o = Op::NONE)
             : index_(-1), value_(value), grad_(0), o_(o) { }
 
         void ComputeValue() {
             SetIndex();
 
             switch (o_) {
-            case Op::Add:
+            case Op::ADD:
                 Add();
                 break;
-            case Op::Min:
+            case Op::MIN:
                 Min();
                 break;
-            case Op::Mul:
+            case Op::MUL:
                 Mul();
                 break;
-            case Op::Div:
+            case Op::DIV:
                 Div();
                 break;
-            case Op::Sin:
+            case Op::SIN:
                 Sin();
                 break;
-            case Op::Cos:
+            case Op::COS:
                 Cos();
                 break;
-            case Op::Log:
+            case Op::LOG:
                 Log();
                 break;
-            case Op::None:
+            case Op::NONE:
                 break;
             }
         }
@@ -68,40 +66,40 @@ namespace ad {
         }
 
 
-        Tensor& Parent(const int c) const {
+        BackwardModeTensor& Parent(const int c) const {
             return compute_graph_.GetIn(index_, c);
         }
 
-        Tensor& Child(const int p) const {
+        BackwardModeTensor& Child(const int p) const {
             return compute_graph_.GetOut(index_, p);
         }
 
-        Tensor& operator+(Tensor& other) const {
-            const auto new_tensor = new Tensor(0, Op::Add);
+        BackwardModeTensor& operator+(BackwardModeTensor& other) const {
+            const auto new_tensor = new BackwardModeTensor(0, Op::ADD);
             compute_graph_.AddEdge(&compute_graph_[index_], new_tensor);
             compute_graph_.AddEdge(&other, new_tensor);
             new_tensor->ComputeValue();
             return *new_tensor;
         }
 
-        Tensor& operator-(Tensor& other) const {
-            const auto new_tensor = new Tensor(0, Op::Min);
+        BackwardModeTensor& operator-(BackwardModeTensor& other) const {
+            const auto new_tensor = new BackwardModeTensor(0, Op::MIN);
             compute_graph_.AddEdge(&compute_graph_[index_], new_tensor);
             compute_graph_.AddEdge(&other, new_tensor);
             new_tensor->ComputeValue();
             return *new_tensor;
         }
 
-        Tensor& operator*(Tensor& other) const {
-            const auto new_tensor = new Tensor(0, Op::Mul);
+        BackwardModeTensor& operator*(BackwardModeTensor& other) const {
+            const auto new_tensor = new BackwardModeTensor(0, Op::MUL);
             compute_graph_.AddEdge(&compute_graph_[index_], new_tensor);
             compute_graph_.AddEdge(&other, new_tensor);
             new_tensor->ComputeValue();
             return *new_tensor;
         }
 
-        Tensor& operator/(Tensor& other) const {
-            const auto new_tensor = new Tensor(0, Op::Div);
+        BackwardModeTensor& operator/(BackwardModeTensor& other) const {
+            const auto new_tensor = new BackwardModeTensor(0, Op::DIV);
             compute_graph_.AddEdge(&compute_graph_[index_], new_tensor);
             compute_graph_.AddEdge(&other, new_tensor);
             new_tensor->ComputeValue();
@@ -117,32 +115,32 @@ namespace ad {
         void ComputeGrad() const {
             //计算下一层的梯度
             switch (o_) {
-            case Op::Add:
+            case Op::ADD:
                 GradOfAdd();
                 break;
-            case Op::Min:
+            case Op::MIN:
                 GradOfMin();
                 break;
-            case Op::Mul:
+            case Op::MUL:
                 GradOfMul();
                 break;
-            case Op::Div:
+            case Op::DIV:
                 GradOfDiv();
                 break;
-            case Op::Sin:
+            case Op::SIN:
                 GradOfSin();
                 break;
-            case Op::Cos:
+            case Op::COS:
                 GradOfCos();
                 break;
-            case Op::Log:
+            case Op::LOG:
                 GradOfLog();
                 break;
-            case Op::None:
+            case Op::NONE:
                 break;
             }
             //继续向下算
-            for (const int& t : compute_graph_.GetIns(index_)) {
+            for (const int t : compute_graph_.GetIns(index_)) {
                 compute_graph_[t].ComputeGrad();
             }
         }
@@ -210,32 +208,32 @@ namespace ad {
         }
     };
 
-    PtrGraph<Tensor> Tensor::compute_graph_;
+    PtrGraph<BackwardModeTensor> BackwardModeTensor::compute_graph_;
 
-    inline Tensor& sin(Tensor& other) {
-        const auto new_tensor = new Tensor(0, Op::Sin);
-        Tensor::compute_graph_.AddEdge(&other, new_tensor);
+    inline BackwardModeTensor& sin(BackwardModeTensor& other) {
+        const auto new_tensor = new BackwardModeTensor(0, Op::SIN);
+        BackwardModeTensor::compute_graph_.AddEdge(&other, new_tensor);
         new_tensor->ComputeValue();
         return *new_tensor;
     }
 
-    inline Tensor& cos(Tensor& other) {
-        const auto new_tensor = new Tensor(0, Op::Cos);
-        Tensor::compute_graph_.AddEdge(&other, new_tensor);
+    inline BackwardModeTensor& cos(BackwardModeTensor& other) {
+        const auto new_tensor = new BackwardModeTensor(0, Op::COS);
+        BackwardModeTensor::compute_graph_.AddEdge(&other, new_tensor);
         new_tensor->ComputeValue();
         return *new_tensor;
     }
 
-    inline Tensor& ln(Tensor& other) {
-        const auto new_tensor = new Tensor(0, Op::Log);
-        Tensor::compute_graph_.AddEdge(&other, new_tensor);
+    inline BackwardModeTensor& ln(BackwardModeTensor& other) {
+        const auto new_tensor = new BackwardModeTensor(0, Op::LOG);
+        BackwardModeTensor::compute_graph_.AddEdge(&other, new_tensor);
         new_tensor->ComputeValue();
         return *new_tensor;
     }
 
-    inline Tensor& tensor(const double var) {
-        const auto new_tensor = new Tensor(var);
-        Tensor::compute_graph_.AddNode(new_tensor);
+    inline BackwardModeTensor& tensor(const double var) {
+        const auto new_tensor = new BackwardModeTensor(var);
+        BackwardModeTensor::compute_graph_.AddNode(new_tensor);
         new_tensor->SetIndex();
         return *new_tensor;
     }

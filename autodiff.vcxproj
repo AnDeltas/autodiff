@@ -22,13 +22,13 @@
     <None Include=".gitignore" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BMode.h" />
-    <ClInclude Include="FMode.h" />
-    <ClInclude Include="PtrGraph.h" />
+    <ClCompile Include="forward_mode_tensor.cpp" />
+    <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FMode.cpp" />
-    <ClCompile Include="test.cpp" />
+    <ClInclude Include="backward_mode_tensor.h" />
+    <ClInclude Include="forward_mode_tensor.h" />
+    <ClInclude Include="pointer_graph.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
