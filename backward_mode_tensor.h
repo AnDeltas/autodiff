@@ -237,4 +237,5 @@ namespace ad {
         new_tensor->SetIndex();
         return *new_tensor;
     }
+    using Tensor = BackwardModeTensor&;
 }

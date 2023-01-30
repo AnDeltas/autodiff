@@ -3,10 +3,10 @@
 #include "backward_mode_tensor.h"
 
 int main(int argc, char* argv[]) {
-    ad::BackwardModeTensor& x1 = ad::tensor(2);
-    ad::BackwardModeTensor& x2 = ad::tensor(5);
+    ad::Tensor x1 = ad::tensor(2);
+    ad::Tensor x2 = ad::tensor(5);
 
-    ad::BackwardModeTensor& f = ad::ln(x1) + x1 * x2 - ad::sin(x2);
+    ad::Tensor f = ad::ln(x1) + x1 * x2 - ad::sin(x2);
 
     f.Backward();
 
